@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gunther Benandeth — Fighter 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-page:    #f5f5f3;
+    --bg-card:    #ffffff;
+    --bg-raise:   #f7f7f5;
+    --bg-hover:   #f0f0ee;
+    --border:     rgba(0,0,0,0.08);
+    --border-md:  rgba(0,0,0,0.14);
+    --text-primary:   #1a1a1a;
+    --text-secondary: #555550;
+    --text-muted:     #999990;
+    --amber-bg:   #FEF3DC; --amber-text:  #7A4A00; --amber-border:  #F0D090;
+    --coral-bg:   #FEF0EE; --coral-text:  #8B2A1E; --coral-border:  #F0B8B0;
+    --blue-bg:    #E8F1FD; --blue-text:   #1A4E8A; --blue-border:   #A8C8F0;
+    --green-bg:   #E6F5EE; --green-text:  #1A5E38; --green-border:  #A0D8B8;
+    --purple-bg:  #EEEDFE; --purple-text: #3C3489; --purple-border: #C5C2F0;
+    --teal-bg:    #E1F5EE; --teal-text:   #085041; --teal-border:   #A3D9C8;
+    --accent:     #4A6CF7;
+    --radius-sm:  6px; --radius-md:  10px; --radius-lg:  14px;
+    --font: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lift: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  body.dark {
+    --bg-page:    #0f1117;
+    --bg-card:    #161b27;
+    --bg-raise:   #1c2235;
+    --bg-hover:   #222840;
+    --border:     rgba(255,255,255,0.07);
+    --border-md:  rgba(255,255,255,0.14);
+    --text-primary:   #e8edf5;
+    --text-secondary: #8a9bb5;
+    --text-muted:     #4a5568;
+    --amber-bg:    #2e2008; --amber-text:  #fcd34d; --amber-border:  #5a3e10;
+    --coral-bg:    #2e1018; --coral-text:  #fda4af; --coral-border:  #5a2030;
+    --blue-bg:     #0d1e38; --blue-text:   #80c4ff; --blue-border:   #1a3a60;
+    --green-bg:    #0d2820; --green-text:  #6ee7b7; --green-border:  #1a4838;
+    --purple-bg:   #2a2460; --purple-text: #c4a8ff; --purple-border: #4a3e8a;
+    --teal-bg:     #0d2e28; --teal-text:   #5eead4; --teal-border:   #1a5048;
+    --accent:      #6b8fff;
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-lift: 0 4px 12px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3);
+  }
+
+  .theme-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 100;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg-card); border: 1px solid var(--border-md);
+    border-radius: 99px; padding: 6px 12px 6px 8px;
+    box-shadow: var(--shadow-lift); cursor: pointer;
+    transition: background 0.2s, border-color 0.2s; user-select: none;
+  }
+  .theme-toggle:hover { background: var(--bg-raise); }
+  .toggle-icon { font-size: 14px; line-height: 1; }
+  .toggle-track { width: 32px; height: 18px; border-radius: 99px; background: var(--border-md); position: relative; transition: background 0.25s; flex-shrink: 0; }
+  body.dark .toggle-track { background: var(--accent); }
+  .toggle-thumb { width: 14px; height: 14px; border-radius: 50%; background: white; position: absolute; top: 2px; left: 2px; transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  body.dark .toggle-thumb { transform: translateX(14px); }
+  .toggle-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); font-family: var(--font); }
+
+  body {
+    font-family: var(--font); background: var(--bg-page); color: var(--text-primary);
+    font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+    min-height: 100vh; padding: 2rem 1rem 4rem; transition: background 0.25s, color 0.25s;
+  }
+
+  .page { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+
+  .card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-card); overflow: hidden; }
+
+  .card-header { padding: 9px 16px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); background: var(--bg-raise); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .card-header-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: 0.5; flex-shrink: 0; }
+
+  .header-card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-lift); padding: 20px 24px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center; }
+  .avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--amber-bg); border: 2px solid var(--amber-border); display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600; color: var(--amber-text); flex-shrink: 0; letter-spacing: 0.03em; }
+  .header-name { font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.01em; margin-bottom: 3px; }
+  .header-sub { font-size: 12.5px; color: var(--text-secondary); font-weight: 400; }
+  .header-badges { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+
+  .pill { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 500; border: 1px solid; white-space: nowrap; }
+  .pill-amber  { background: var(--amber-bg);  color: var(--amber-text);  border-color: var(--amber-border); }
+  .pill-coral  { background: var(--coral-bg);  color: var(--coral-text);  border-color: var(--coral-border); }
+  .pill-blue   { background: var(--blue-bg);   color: var(--blue-text);   border-color: var(--blue-border); }
+  .pill-green  { background: var(--green-bg);  color: var(--green-text);  border-color: var(--green-border); }
+  .pill-purple { background: var(--purple-bg); color: var(--purple-text); border-color: var(--purple-border); }
+  .pill-teal   { background: var(--teal-bg);   color: var(--teal-text);   border-color: var(--teal-border); }
+
+  .htp-body { padding: 18px 20px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.75; display: flex; flex-direction: column; gap: 12px; }
+  .htp-body strong { color: var(--text-primary); font-weight: 600; }
+  .htp-protocol { font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.03em; background: var(--bg-raise); border-radius: var(--radius-md); padding: 12px 14px; line-height: 1.8; border: 1px solid var(--border); }
+  .htp-protocol-label { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; opacity: 0.8; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+  .stat-cell { background: var(--bg-card); padding: 13px 16px; display: flex; flex-direction: column; gap: 2px; }
+  .stat-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .stat-value { font-size: 20px; font-weight: 600; color: var(--text-primary); font-family: var(--mono); letter-spacing: -0.02em; }
+  .stat-cell.highlight .stat-value { color: var(--accent); }
+
+  .weapon-entry { padding: 13px 18px; border-bottom: 1px solid var(--border); }
+  .weapon-entry:last-child { border-bottom: none; }
+  .weapon-name-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+  .weapon-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .weapon-tag { font-size: 10px; font-weight: 500; color: var(--accent); background: var(--blue-bg); border: 1px solid var(--blue-border); padding: 1px 7px; border-radius: 99px; }
+  .weapon-stats { font-family: var(--mono); font-size: 12px; color: var(--text-secondary); margin-bottom: 3px; }
+  .weapon-note { font-size: 12px; color: var(--text-muted); background: var(--bg-raise); border-radius: var(--radius-sm); padding: 5px 9px; margin-top: 6px; border-left: 3px solid var(--amber-border); }
+  .weapon-note strong { color: var(--amber-text); }
+
+  .ae-grid { display: grid; grid-template-columns: 90px 1fr; }
+  .ae-row { display: contents; }
+  .ae-row > * { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  .ae-row:last-child > * { border-bottom: none; }
+  .ae-type { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); background: var(--bg-raise); display: flex; align-items: center; border-right: 1px solid var(--border); }
+  .ae-content { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+  .ae-content strong { color: var(--text-primary); font-weight: 500; }
+
+  .fe-card { padding: 16px 18px; border-bottom: 1px solid var(--border); }
+  .fe-card:last-child { border-bottom: none; }
+  .fe-top { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; flex-wrap: wrap; }
+  .fe-timing { font-size: 10px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); }
+  .fe-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+  .fe-cost { font-size: 11.5px; color: var(--text-muted); margin-bottom: 6px; font-family: var(--mono); }
+  .fe-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 7px; }
+  .fe-when { font-size: 12px; color: var(--text-muted); background: var(--bg-raise); border-radius: var(--radius-sm); padding: 6px 10px; border-left: 3px solid var(--accent); opacity: 0.85; }
+
+  .combo-block { padding: 13px 18px; border-bottom: 1px solid var(--border); }
+  .combo-block:last-of-type { border-bottom: none; }
+  .combo-title { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.06em; margin-bottom: 8px; }
+  .combo-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .combo-step { font-size: 12.5px; background: var(--bg-raise); border: 1px solid var(--border-md); padding: 4px 10px; border-radius: var(--radius-sm); color: var(--text-primary); }
+  .combo-arrow { color: var(--text-muted); font-size: 12px; }
+
+  .fp-note { font-family: var(--mono); font-size: 11px; color: var(--text-muted); padding: 10px 18px; background: var(--bg-raise); border-top: 1px solid var(--border); letter-spacing: 0.03em; line-height: 1.7; }
+
+  @media (max-width: 600px) {
+    .header-card { grid-template-columns: auto 1fr; }
+    .header-badges { display: none; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .ae-grid { grid-template-columns: 70px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="theme-toggle" id="themeToggle">
+  <span class="toggle-icon" id="toggleIcon">☀️</span>
+  <div class="toggle-track"><div class="toggle-thumb"></div></div>
+  <span class="toggle-label" id="toggleLabel">Light</span>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header-card">
+    <div class="avatar">GB</div>
+    <div>
+      <div class="header-name">Gunther Benandeth</div>
+      <div class="header-sub">Human · Fighter 3 · Blademaster Specialist · Bounty Hunter</div>
+    </div>
+    <div class="header-badges">
+      <span class="pill pill-coral">Blademaster</span>
+      <span class="pill pill-amber">Adaptive Fighting</span>
+      <span class="pill pill-blue">Hit-and-Run</span>
+    </div>
+  </div>
+
+  <!-- HOW TO PLAY -->
+  <div class="card">
+    <div class="card-header"><span class="card-header-dot"></span>How to play Gunther — the simple version</div>
+    <div class="htp-body">
+      <p>Gunther is a <strong>hit-and-run melee striker</strong>. He gets in, does damage, and gets out before anyone can hit him back. He is not a tank — he survives by <strong>never being where the enemy expects</strong>. Between his Hidden Blade, Adaptive Fighting tricks, and Cunning Strategist's free Disengage, he can strike and reposition every single turn without provoking a single Opportunity Attack.</p>
+      <p>Every turn revolves around one question: <strong>can I strike and escape safely?</strong> The answer is almost always yes. His <strong>Action Surge</strong> (2/SR) is his biggest burst — save it for priority targets or desperate moments. <strong>Parry</strong> is his insurance policy — hold it for a hit that would drop him. His <strong>Adaptive Fighting charges</strong> (3/SR) are easy to forget but powerful: Draw extends his crit range, Stow gives a free Disengage, and Change Up swaps fighting styles on the fly.</p>
+      <p>The <strong>Electrobaton</strong> is a situational weapon — its <strong>Shocking 13</strong> property forces a DEX save or the target takes extra lightning damage and is Shocked (disadvantage on attacks) until end of their next turn. Swap to it when you want to debuff a dangerous attacker before they swing.</p>
+      <div class="htp-protocol">
+        <div class="htp-protocol-label">// Combat Protocol</div>
+        Move in close. Attack with Hidden Blade (+5). Bonus action: Cunning Disengage — move out without triggering Opportunity Attacks. Repeat. Use <strong>Electrobaton</strong> instead when you want to Shock a dangerous enemy before they attack. Use <strong>Draw</strong> (Adaptive) to extend crits to 19–20 before a big swing. Use <strong>Action Surge</strong> to double damage on a priority target. Use <strong>Parry</strong> (reaction) when a melee hit would drop you. Short rests reset almost everything.
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY STATS -->
+  <div class="card">
+    <div class="card-header"><span class="card-header-dot"></span>Key Stats</div>
+    <div class="stats-grid">
+      <div class="stat-cell highlight"><div class="stat-label">Hit Points</div><div class="stat-value">30 max</div></div>
+      <div class="stat-cell highlight"><div class="stat-label">Armor Class</div><div class="stat-value">15</div></div>
+      <div class="stat-cell highlight"><div class="stat-label">Initiative</div><div class="stat-value">+5</div></div>
+      <div class="stat-cell"><div class="stat-label">Speed</div><div class="stat-value">30 ft</div></div>
+      <div class="stat-cell"><div class="stat-label">Proficiency</div><div class="stat-value">+2</div></div>
+      <div class="stat-cell"><div class="stat-label">Hit Dice</div><div class="stat-value">3d10</div></div>
+      <div class="stat-cell"><div class="stat-label">STR Save</div><div class="stat-value">+5 ✦</div></div>
+      <div class="stat-cell"><div class="stat-label">CON Save</div><div class="stat-value">+4 ✦</div></div>
+      <div class="stat-cell"><div class="stat-label">Sup. Dice</div><div class="stat-value">2 / SR</div></div>
+    </div>
+  </div>
+
+  <!-- WEAPONS -->
+  <div class="card">
+    <div class="card-header"><span class="card-header-dot"></span>Weapons</div>
+
+    <div class="weapon-entry">
+      <div class="weapon-name-row">
+        <span class="weapon-name">Hidden Blade</span>
+        <span class="weapon-tag">PRIMARY</span>
+        <span class="weapon-tag">Finesse</span>
+      </div>
+      <div class="weapon-stats">Attack +5 · 1d4+3 kinetic · Melee 5ft · Martial Vibroweapon</div>
+    </div>
+
+    <div class="weapon-entry">
+      <div class="weapon-name-row">
+        <span class="weapon-name">Electrobaton</span>
+        <span class="weapon-tag">DEBUFF</span>
+        <span class="weapon-tag">Finesse</span>
+        <span class="weapon-tag">Shocking 13</span>
+      </div>
+      <div class="weapon-stats">Attack +4 · 1d6+2 kinetic · Melee 5ft · Martial Vibroweapon</div>
+      <div class="weapon-note"><strong>Shocking 13:</strong> On a hit, target makes a DEX save DC 13. On a fail — takes +1d4 lightning damage and is <strong>Shocked</strong> until end of their next turn (disadvantage on attack rolls). Use this against a dangerous melee attacker before they swing at you or an ally.</div>
+    </div>
+
+    <div class="weapon-entry">
+      <div class="weapon-name-row">
+        <span class="weapon-name">Unarmed Strike</span>
+      </div>
+      <div class="weapon-stats">Attack +5 · 1d4+3 kinetic · Melee 5ft · Natural</div>
+    </div>
+
+    <div class="weapon-entry">
+      <div class="weapon-name-row">
+        <span class="weapon-name">Light Pistol</span>
+        <span class="weapon-tag">RANGED BACKUP</span>
+      </div>
+      <div class="weapon-stats">Attack +4 · 1d4+2 energy · Range 40/160ft · Simple Blaster</div>
+    </div>
+  </div>
+
+  <!-- ACTION ECONOMY -->
+  <div class="card">
+    <div class="card-header"><span class="card-header-dot"></span>Action Economy</div>
+    <div class="ae-grid">
+      <div class="ae-row">
+        <div class="ae-type">Action</div>
+        <div class="ae-content">Attack · Dash · Dodge · Disengage · <strong>Action Surge</strong> (extra action, 2/SR)</div>
+      </div>
+      <div class="ae-row">
+        <div class="ae-type">Bonus</div>
+        <div class="ae-content"><strong>Cunning: Disengage</strong> · <strong>Cunning: Throw Grenade</strong> · <strong>Second Wind</strong> (heal 1d10+3, 1/SR)</div>
+      </div>
+      <div class="ae-row">
+        <div class="ae-type">Reaction</div>
+        <div class="ae-content"><strong>Parry</strong> (reduce melee damage, sup. die) · Opportunity attacks · <strong>Defiant</strong> (reroll failed save, 1/SR)</div>
+      </div>
+      <div class="ae-row">
+        <div class="ae-type">Object</div>
+        <div class="ae-content"><strong>Adaptive Fighting</strong> — Draw · Stow · Change Up (1 charge each, 3/SR)</div>
+      </div>
+      <div class="ae-row">
+        <div class="ae-type">Free</div>
+        <div class="ae-content">Speak · Drop item · Minor interactions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY FEATURES -->
+  <div class="card">
+    <div class="card-header"><span class="card-header-dot"></span>Key Class Features</div>
+
+    <div class="fe-card">
+      <div class="fe-top">
+        <span class="fe-timing">Bonus Action</span>
+        <span class="fe-name">Cunning Strategist</span>
+        <span class="pill pill-blue">Every Turn</span>
+      </div>
+      <div class="fe-cost">Chosen options: Disengage · Throw Grenade</div>
+      <div class="fe-desc"><strong>Disengage</strong> — move away after striking without triggering Opportunity Attacks. This is Gunther's default every single turn — strike, disengage, reposition.<br><br><strong>Throw Grenade</strong> — lob a grenade or mine without using your Action. Lets you get a full attack AND area damage on the same turn.</div>
+      <div class="fe-when">Default every turn: Attack → Cunning Disengage → move out safely. Swap to Grenade when there's a cluster of enemies to punish.</div>
+    </div>
+
+    <div class="fe-card">
+      <div class="fe-top">
+        <span class="fe-timing">Special</span>
+        <span class="fe-name">Action Surge</span>
+        <span class="pill pill-coral">2 / Short Rest</span>
+      </div>
+      <div class="fe-cost">Take one additional full Action this turn</div>
+      <div class="fe-desc">Gunther's biggest single-turn burst. Take a full second Action — attack again, dash, or anything else.</div>
+      <div class="fe-when">Save for: finishing a priority target, when a target turns its back, or a moment that decides the fight. Don't waste it on a healthy enemy early in a fight.</div>
+    </div>
+
+    <div class="fe-card">
+      <div class="fe-top">
+        <span class="fe-timing">Reaction</span>
+        <span class="fe-name">Parry</span>
+        <span class="pill pill-amber">2 / Short Rest · Combat Superiority</span>
+      </div>
+      <div class="fe-cost">Triggered when a melee attack hits you — expend a superiority die to reduce damage</div>
+      <div class="fe-desc">When a melee hit connects, spend a superiority die and subtract the result from the damage taken. This can be the difference between staying up and going unconscious.</div>
+      <div class="fe-when">Use when a hit would drop you below 8 HP or knock you unconscious. Don't burn it on small hits — hold it for the one that matters.</div>
+    </div>
+
+    <div class="fe-card">
+      <div class="fe-top">
+        <span class="fe-timing">Weapon Property</span>
+        <span class="fe-name">Electrobaton — Shocking 13</span>
+        <span class="pill pill-purple">Situational</span>
+      </div>
+      <div class="fe-cost">Triggered on a hit — target makes DEX save DC 13</div>
+      <div class="fe-desc">On a failed save: target takes <strong>+1d4 lightning damage</strong> and is <strong>Shocked</strong> until end of their next turn — giving them disadvantage on all attack rolls. The Electrobaton hits slightly less hard than the Hidden Blade normally, but the Shocked condition is a meaningful debuff against high-threat enemies.<br><br>Note: Finesse means you can use STR or DEX — stick with STR (+3) since it's higher than DEX (+2).</div>
+      <div class="fe-when">Swap to Electrobaton when facing a powerful melee attacker — Shocking them before their turn gives your whole party a safer round. Don't use it as your default; the Hidden Blade does more reliable damage.</div>
+    </div>
+
+    <div class="fe-card">
+      <div class="fe-top">
+        <span class="fe-timing">Object Interaction</span>
+        <span class="fe-name">Adaptive Fighting</span>
+        <span class="pill pill-teal">3 Charges / Short Rest</span>
+      </div>
+      <div class="fe-cost">Three separate uses — expend 1 charge each</div>
+      <div class="fe-desc">
+        <strong>↑ Draw</strong> — Drawing a weapon extends your crit range to 19–20 until your next turn starts. Best used before a high-stakes attack.<br><br>
+        <strong>↓ Stow</strong> — Stowing a weapon gives you a <strong>free Disengage</strong> — no action, no bonus action spent. Frees your bonus action for Second Wind or Throw Grenade on the same turn.<br><br>
+        <strong>⟳ Change Up</strong> — Swap your active Fighting Style mid-combat. Use if the situation shifts from melee to ranged.
+      </div>
+      <div class="fe-when">Draw before attacking for extended crit range. Stow → move out free → bonus action still available for anything else.</div>
+    </div>
+
+    <div class="fe-card">
+      <div class="fe-top">
+        <span class="fe-timing">Bonus Action</span>
+        <span class="fe-name">Second Wind</span>
+        <span class="pill pill-green">1 / Short Rest</span>
+      </div>
+      <div class="fe-cost">Heal 1d10+3 HP</div>
+      <div class="fe-desc">Free healing that only costs a bonus action — meaning you skip Cunning Disengage that turn. Still worth it when you're getting hit hard. Resets on every short rest.</div>
+      <div class="fe-when">Use when below ~12 HP. Don't hold it — it comes back on a short rest. If you need it, use it.</div>
+    </div>
+
+    <div class="fe-card">
+      <div class="fe-top">
+        <span class="fe-timing">Reaction</span>
+        <span class="fe-name">Defiant</span>
+        <span class="pill pill-green">1 / Short Rest · Human</span>
+      </div>
+      <div class="fe-cost">When you fail a saving throw — reroll and take the higher result</div>
+      <div class="fe-desc">No action cost — triggered automatically on a failed save. Can turn a save that would disable you for a turn into a passing result.</div>
+      <div class="fe-when">Best on: CON saves, STR saves vs grapple or shove, or any save that would stun, paralyze, or knock you prone.</div>
+    </div>
+
+  </div>
+
+  <!-- COMBOS -->
+  <div class="card">
+    <div class="card-header"><span class="card-header-dot"></span>Turn Combos</div>
+
+    <div class="combo-block">
+      <div class="combo-title">// STANDARD TURN — Strike and Slip</div>
+      <div class="combo-steps">
+        <span class="combo-step">Move in</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Action: Attack (Hidden Blade +5)</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Bonus: Cunning Disengage</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Move out — no Opportunity Attacks</span>
+      </div>
+    </div>
+
+    <div class="combo-block">
+      <div class="combo-title">// SHOCK + SLIP — Debuff a Dangerous Enemy</div>
+      <div class="combo-steps">
+        <span class="combo-step">Move in</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Action: Electrobaton (+4) — DEX save DC 13</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">On fail: +1d4 lightning, target Shocked</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Bonus: Cunning Disengage — move out</span>
+      </div>
+    </div>
+
+    <div class="combo-block">
+      <div class="combo-title">// CRIT SETUP — Extended Crit Range</div>
+      <div class="combo-steps">
+        <span class="combo-step">Draw weapon (Adaptive · crits on 19–20)</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Action: Attack with extended crit range</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Bonus: Cunning Disengage — move out</span>
+      </div>
+    </div>
+
+    <div class="combo-block">
+      <div class="combo-title">// THE FINISHER — Action Surge Burst</div>
+      <div class="combo-steps">
+        <span class="combo-step">Action: Attack (Hidden Blade +5)</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Action Surge: Second full attack</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Bonus: Cunning Disengage — move out</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Target eliminated</span>
+      </div>
+    </div>
+
+    <div class="combo-block">
+      <div class="combo-title">// AREA CONTROL — Attack + Grenade Same Turn</div>
+      <div class="combo-steps">
+        <span class="combo-step">Action: Attack</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Bonus: Cunning Throw Grenade</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Full attack damage + area control</span>
+      </div>
+    </div>
+
+    <div class="combo-block">
+      <div class="combo-title">// GHOST EXIT — Escape with Bonus Action Free</div>
+      <div class="combo-steps">
+        <span class="combo-step">Stow weapon (Adaptive = free Disengage)</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Move away — no Opportunity Attacks</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Draw pistol</span>
+        <span class="combo-arrow">→</span>
+        <span class="combo-step">Bonus action still free</span>
+      </div>
+    </div>
+
+    <div class="fp-note">
+      Action Surge (2) refreshes on SHORT rest · Parry / Superiority (2) refreshes on SHORT rest · Adaptive Fighting (3) refreshes on SHORT rest · Second Wind refreshes on SHORT rest · Defiant refreshes on SHORT rest · Hit Dice refresh on LONG rest
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const toggle = document.getElementById('themeToggle');
+  const icon   = document.getElementById('toggleIcon');
+  const label  = document.getElementById('toggleLabel');
+  const saved  = localStorage.getItem('gunther-theme');
+  if (saved === 'dark') {
+    document.body.classList.add('dark');
+    icon.textContent  = '🌙';
+    label.textContent = 'Dark';
+  }
+  toggle.addEventListener('click', () => {
+    const isDark = document.body.classList.toggle('dark');
+    icon.textContent  = isDark ? '🌙' : '☀️';
+    label.textContent = isDark ? 'Dark' : 'Light';
+    localStorage.setItem('gunther-theme', isDark ? 'dark' : 'light');
+  });
+</script>
+</body>
+</html>
